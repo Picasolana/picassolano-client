@@ -3,7 +3,7 @@ import { Card, Modal, TextInput } from "flowbite-react";
 import { Nav } from "./Nav";
 import { Logo } from "./Logo";
 import Grid from "./Grid";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import DateSelector from "./DateSelector";
 
 type User = {
@@ -27,7 +27,7 @@ const promptText = `
 const createMockUser: () => User = () => ({
   username: faker.internet.userName(),
   date: "09/11/2024",
-  score: `${faker.number.int({})}`,
+  score: `${faker.number.int({ min: 1, max: 100 })}%`,
   prompt: promptText,
   imgSrc: faker.image.urlPicsumPhotos(),
   // "https://plus.unsplash.com/premium_photo-1709311451518-f1b9cb3dab5b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -35,15 +35,33 @@ const createMockUser: () => User = () => ({
 
 interface LeaderboardProps {}
 
+let all_users = Array(23)
+  .fill(0)
+  .map(() => Array(20).fill(0).map(createMockUser));
+let users = all_users[0].sort(
+  (a, b) =>
+    parseInt(b.score.replace(/%/g, ""), 10) -
+    parseInt(a.score.replace(/%/g, ""), 10)
+) as User[];
+
 export const Leaderboard: React.FC<LeaderboardProps> = () => {
-  console.log('logg');
-  
-  const users = Array(20).fill(0).map(createMockUser) as User[];
+  console.log("logg");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User>(createMockUser);
   const [searchTerm, setsearchTerm] = useState("");
-  const [date, setdate] = useState('');
+  const old = useRef(0);
+  const [i, seti] = useState(0);
+
+  if (i !== old.current) {
+    users = all_users[i].sort(
+      (a, b) =>
+        parseInt(b.score.replace(/%/g, ""), 10) -
+        parseInt(a.score.replace(/%/g, ""), 10)
+    );
+  }
+
+  old.current = i;
 
   const closeModal = () => {
     setModalOpen(false);
@@ -71,11 +89,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
           <div className="text-center flex-grow">
             <DateSelector
               onSetDate={(d) => {
-                setdate(d);
+                seti((i) => i + 1);
               }}
             />
           </div>
-          <div className="absolute right-0 -z-10">
+          <div className="absolute right-0">
             <TextInput
               id="search"
               type="text"
