@@ -85,7 +85,6 @@ export const GuessImage = () => {
         sessionId,
         userGuess: newGuess,
       });
-      navigate("/leaderboard");
     }
   };
 
