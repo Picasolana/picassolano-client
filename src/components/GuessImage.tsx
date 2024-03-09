@@ -114,7 +114,7 @@ export const GuessImage = () => {
         {
           id: userGuessData.index.toString(),
           text: userGuessData.prompt,
-          src: userGuessData.image,
+          src: "data:image/jpeg;base64," + userGuessData.image,
           score: userGuessData.score,
         },
       ]);
