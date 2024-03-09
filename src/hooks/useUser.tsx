@@ -61,29 +61,29 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     let userGuessResult: UserGuess[] = [];
-    if (sessionId) {
-      const fetchUserResult = async () => {
-        for (let i; (i = 0); i <= 4) {
-          try {
-            const userGuessData = await getUserResult({ sessionId, index: i });
-            userGuessResult = [
-              ...userGuessResult,
-              {
-                id: userGuessData.index.toString(),
-                text: userGuessData.prompt,
-                src: userGuessData.image,
-                score: userGuessData.score,
-              },
-            ];
-          } catch (err) {
-            return;
-          }
+    const fetchUserResult = async () => {
+      for (let i; (i = 0); i <= 4) {
+        try {
+          const userGuessData = await getUserResult({ sessionId, index: i });
+          console.log("userGuessData", userGuessData);
+          userGuessResult = [
+            ...userGuessResult,
+            {
+              id: userGuessData.index.toString(),
+              text: userGuessData.prompt,
+              src: userGuessData.image,
+              score: userGuessData.score,
+            },
+          ];
+        } catch (err) {
+          console.log("error", err);
+          return;
         }
-        setUserGuess(userGuessResult);
-      };
-      fetchUserResult();
-    }
-  }, [sessionId, userAttempt]);
+      }
+      setUserGuess(userGuessResult);
+    };
+    fetchUserResult();
+  }, [userAttempt]);
 
   return (
     <UserContext.Provider

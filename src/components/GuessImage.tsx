@@ -3,7 +3,11 @@ import Chevron from "react-chevron";
 import SubmitButton from "./SubmitButton";
 import { EnterEmailModal } from "./EnterEmail";
 import { UserGuess, useUser } from "../hooks/useUser";
-import { postUserGuess, saveUserResult } from "../api/userGuess.api";
+import {
+  getUserResult,
+  postUserGuess,
+  saveUserResult,
+} from "../api/userGuess.api";
 import { useNavigate } from "react-router-dom";
 
 const displayAttempts = (currentGuess: UserGuess) => {
@@ -42,6 +46,7 @@ export const GuessImage = () => {
   const currentIndex = Number(currentGuess?.id);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
+  console.log("userGuess", userGuess);
 
   const handleClickPrevious = () => {
     if (Number(currentGuess.id) > 0) {
@@ -78,7 +83,19 @@ export const GuessImage = () => {
           identifier: userIdentifier,
           sessionId,
         });
-        setUserAttempt(Number(newGuess.id));
+        const userGuessData = await getUserResult({
+          sessionId,
+          index: Number(newGuess.id),
+        });
+        setUserGuess([
+          ...userGuess.slice(0, Number(newGuess.id)),
+          {
+            id: userGuessData.index.toString(),
+            text: userGuessData.prompt,
+            src: userGuessData.image,
+            score: userGuessData.score,
+          },
+        ]);
         if (res.ok) {
           navigate("/leaderboard");
         }
@@ -88,7 +105,19 @@ export const GuessImage = () => {
         sessionId,
         userGuess: newGuess,
       });
-      setUserAttempt(Number(newGuess.id));
+      const userGuessData = await getUserResult({
+        sessionId,
+        index: Number(newGuess.id),
+      });
+      setUserGuess([
+        ...userGuess.slice(0, Number(newGuess.id)),
+        {
+          id: userGuessData.index.toString(),
+          text: userGuessData.prompt,
+          src: userGuessData.image,
+          score: userGuessData.score,
+        },
+      ]);
     }
   };
 
@@ -111,9 +140,7 @@ export const GuessImage = () => {
             {`${displayAttempts(currentGuess)} - Score: 
             ${
               Number(currentGuess.score) > 0
-                ? Number(currentGuess.score).toLocaleString(undefined, {
-                    style: "percent",
-                  })
+                ? Number(currentGuess.score).toLocaleString() + "%"
                 : "?"
             }`}
           </h3>
