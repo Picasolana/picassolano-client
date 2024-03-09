@@ -4,7 +4,7 @@
 
 ![alt text](image-1.png)
 
-## Features
+## Tech
 
 - **Vite**: A blazing fast frontend build tool that provides lightning-fast cold server start and hot module replacement (HMR).
 - **React**: A JavaScript library for building user interfaces.
