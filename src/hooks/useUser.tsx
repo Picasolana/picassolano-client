@@ -45,11 +45,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [userIdentifierFromCookie]);
 
   useEffect(() => {
-    const fetchSessionId = async () => {
-      const sessionIdData = await getSessionId();
-      setSessionId(sessionIdData.sessionId);
-    };
-    fetchSessionId();
+    if (!sessionId) {
+      const fetchSessionId = async () => {
+        const sessionIdData = await getSessionId();
+        setSessionId(sessionIdData.sessionId);
+      };
+      fetchSessionId();
+    }
   }, []);
 
   useEffect(() => {

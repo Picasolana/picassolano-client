@@ -41,6 +41,7 @@ export const GuessImage = () => {
   const currentIndex = Number(currentGuess?.id);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
+  console.log("userGuess", userGuess);
 
   const handleClickPrevious = () => {
     if (Number(currentGuess.id) > 0) {

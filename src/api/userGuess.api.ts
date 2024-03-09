@@ -1,23 +1,23 @@
-const mockData = {
-  data: {
-    sessionId: "aaa1",
-    identifier: "abc@abc.com",
-    userGuess: [
-      {
-        id: "0",
-        text: "this is a placeholder image",
-        src: "https://via.placeholder.com/300",
-        score: 0.98,
-      },
-      {
-        id: "1",
-        text: "this is another placeholder image 2",
-        src: "https://via.placeholder.com/300",
-        score: 0.8,
-      },
-    ],
-  },
-};
+// const mockData = {
+//   data: {
+//     sessionId: "aaa1",
+//     identifier: "abc@abc.com",
+//     userGuess: [
+//       {
+//         id: "0",
+//         text: "this is a placeholder image",
+//         src: "https://via.placeholder.com/300",
+//         score: 0.98,
+//       },
+//       {
+//         id: "1",
+//         text: "this is another placeholder image 2",
+//         src: "https://via.placeholder.com/300",
+//         score: 0.8,
+//       },
+//     ],
+//   },
+// };
 
 interface UserGuess {
   id: string;
@@ -66,7 +66,13 @@ export const getUserResult = async (data: {
 };
 
 export const getSessionId = async () => {
-  const response = await fetch(`${baseURL}/api/session/new`);
+  const response = await fetch(`${baseURL}/api/session/new`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  });
   return response.json();
 };
 
