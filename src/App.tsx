@@ -1,11 +1,12 @@
+import React from "react";
 import { Title } from "./components/Title";
 import { getImage, image_url } from "./api/getImage";
 import { GivenImage } from "./components/GivenImage";
 import { getUserGuess } from "./api/getUserGuess";
 import { GuessImage } from "./components/GuessImage";
 import { useEffect, useState } from "react";
-import React from "react";
 import { Nav } from "./components/Nav";
+import { Logo } from "./components/Logo";
 
 export default function Home() {
   const [imageUrl, setImageUrl] = useState("");
@@ -33,6 +34,7 @@ export default function Home() {
   };
   return (
     <main className="flex min-h-screen flex-col items-center p-8 gap-8">
+      <Logo />
       <Nav />
       <Title text="Replicate the image using AI" />
       <div className="flex flex-col items-center md:items-start md:flex-row gap-16">

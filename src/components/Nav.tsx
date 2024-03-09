@@ -6,7 +6,7 @@ export const Nav = () => {
     <nav
       style={{
         display: "flex",
-        marginTop: 50,
+        marginTop: 5,
       }}
     >
       <div style={{ display: "flex", margin: "0 auto" }}>
