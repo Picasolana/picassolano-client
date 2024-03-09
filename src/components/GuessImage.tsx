@@ -24,7 +24,8 @@ const displayAttempts = (currentGuess: UserGuess) => {
 };
 
 export const GuessImage = () => {
-  const { userGuess, sessionId, userIdentifier, setUserGuess } = useUser();
+  const { userGuess, sessionId, userIdentifier, setUserGuess, setUserAttempt } =
+    useUser();
   const emptyGuess = {
     id: userGuess?.length?.toString(),
     text: "",
@@ -41,7 +42,6 @@ export const GuessImage = () => {
   const currentIndex = Number(currentGuess?.id);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
-  console.log("userGuess", userGuess);
 
   const handleClickPrevious = () => {
     if (Number(currentGuess.id) > 0) {
@@ -74,17 +74,21 @@ export const GuessImage = () => {
           sessionId,
           userGuess: newGuess,
         });
-        await saveUserResult({
+        const res = await saveUserResult({
           identifier: userIdentifier,
           sessionId,
         });
-        navigate("/leaderboard");
+        setUserAttempt(Number(newGuess.id));
+        if (res.ok) {
+          navigate("/leaderboard");
+        }
       }
     } else {
       await postUserGuess({
         sessionId,
         userGuess: newGuess,
       });
+      setUserAttempt(Number(newGuess.id));
     }
   };
 

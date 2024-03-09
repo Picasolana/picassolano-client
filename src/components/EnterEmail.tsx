@@ -22,11 +22,17 @@ const EmailForm: React.FC<{ setIsEmail: (value: boolean) => void }> = ({
     e.preventDefault();
     setUserIdentifier(email);
     setCookie("userIdentifier", email, 1);
-    await saveUserResult({
-      sessionId,
-      identifier: email,
-    });
-    navigate("/leaderboard");
+    try {
+      const res = await saveUserResult({
+        sessionId,
+        identifier: email,
+      });
+      if (res.ok) {
+        navigate("/leaderboard");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleBack = () => {

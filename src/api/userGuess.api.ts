@@ -44,7 +44,7 @@ export const postUserGuess = async (data: UserGuessPost) => {
       prompt: data.userGuess.text,
     }),
   });
-  return response.json();
+  return await response.json();
 };
 
 interface UserResult {
@@ -62,7 +62,7 @@ export const getUserResult = async (data: {
   const response = await fetch(
     `${baseURL}/api/contest/submission/${data.sessionId}/${data.index}`
   );
-  return response.json();
+  return await response.json();
 };
 
 export const getSessionId = async () => {
@@ -73,7 +73,7 @@ export const getSessionId = async () => {
     },
     body: JSON.stringify({}),
   });
-  return response.json();
+  return await response.json();
 };
 
 export const saveUserResult = async (data: {
@@ -87,5 +87,5 @@ export const saveUserResult = async (data: {
     },
     body: JSON.stringify({ email: data.identifier, sessionId: data.sessionId }),
   });
-  return response.json();
+  return response;
 };

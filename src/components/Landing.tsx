@@ -30,7 +30,6 @@ export const Landing: React.FC<LandingProps> = ({ setHideLanding }) => {
           <div
             className="px-8 py-2 z-[999]  bg-black rounded-[6px]  relative group transition duration-200 text-white hover:bg-transparent"
             onClick={() => {
-              console.log("clicked");
               setCookie("hasLanding", "true", 1);
               setHideLanding(true);
             }}

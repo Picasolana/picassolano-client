@@ -17,6 +17,8 @@ interface UserContextType {
   setUserIdentifier: (value: string) => void;
   userGuess: UserGuess[];
   setUserGuess: (value: UserGuess[]) => void;
+  userAttempt: number;
+  setUserAttempt: (value: number) => void;
 }
 
 // Create the initial context with default values
@@ -27,6 +29,8 @@ const UserContext = createContext<UserContextType>({
   setUserIdentifier: () => {},
   userGuess: [],
   setUserGuess: () => {},
+  userAttempt: 0,
+  setUserAttempt: () => {},
 });
 
 // Provider component to wrap your application
@@ -34,6 +38,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [sessionId, setSessionId] = useState("");
+  const [userAttempt, setUserAttempt] = useState(0);
   const [userIdentifier, setUserIdentifier] = useState("");
   const [userGuess, setUserGuess] = useState<UserGuess[]>([]);
   const userIdentifierFromCookie = getCookie("userIdentifier");
@@ -78,7 +83,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       };
       fetchUserResult();
     }
-  }, [sessionId]);
+  }, [sessionId, userAttempt]);
 
   return (
     <UserContext.Provider
@@ -89,6 +94,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         setUserIdentifier,
         userGuess,
         setUserGuess,
+        userAttempt,
+        setUserAttempt,
       }}
     >
       {children}
