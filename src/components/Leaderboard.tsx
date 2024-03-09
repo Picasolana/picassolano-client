@@ -1,89 +1,144 @@
+import { faker } from "@faker-js/faker";
+import { Card, Modal, TextInput } from "flowbite-react";
 import { Nav } from "./Nav";
 import { Logo } from "./Logo";
+import Grid from "./Grid";
+import { ChangeEvent, useState } from "react";
+import DateSelector from "./DateSelector";
 
-const leaderboardData = [
-  {
-    rank: 1,
-    name: "John Doe",
-    score: 100,
-    date: "2024-03-09",
-    prompt:
-      "Paint a scene where a young girl dances with fire by the tranquil lakeshore.",
-  },
-  {
-    rank: 2,
-    name: "Jane Smith",
-    score: 90,
-    date: "2024-03-09",
-    prompt:
-      "Craft a vivid picture of a girl mesmerized by the flames as she stands near the serene lake.",
-  },
-  {
-    rank: 3,
-    name: "Alice Johnson",
-    score: 85,
-    date: "2024-03-09",
-    prompt:
-      "Describe the captivating sight of a girl twirling flames by the calm waters of the lake.",
-  },
-  {
-    rank: 4,
-    name: "Bob Brown",
-    score: 80,
-    date: "2024-03-09",
-    prompt:
-      "Illustrate the image of a girl's silhouette against the fiery glow, her laughter echoing across the quiet lake.",
-  },
-  {
-    rank: 5,
-    name: "Emma Davis",
-    score: 75,
-    date: "2024-03-09",
-    prompt:
-      "Imagine a girl's dance with fire casting enchanting reflections on the placid surface of the lake.",
-  },
-];
+type User = {
+  username: string;
+  score: string;
+  date: string;
+  prompt: string;
+  imgSrc: string;
+};
 
-export const Leaderboard = () => {
+const promptText = `
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+  enim ad minim veniam, quis nostrud exercitation ullamco laboris
+  nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+  in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+  nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+  sunt in culpa qui officia deserunt mollit anim id est laborum.
+`;
+
+const createMockUser: () => User = () => ({
+  username: faker.internet.userName(),
+  date: "09/11/2024",
+  score: `${faker.number.int({})}`,
+  prompt: promptText,
+  imgSrc: faker.image.urlPicsumPhotos(),
+  // "https://plus.unsplash.com/premium_photo-1709311451518-f1b9cb3dab5b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+});
+
+interface LeaderboardProps {}
+
+export const Leaderboard: React.FC<LeaderboardProps> = () => {
+  console.log('logg');
+  
+  const users = Array(20).fill(0).map(createMockUser) as User[];
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User>(createMockUser);
+  const [searchTerm, setsearchTerm] = useState("");
+  const [date, setdate] = useState('');
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+    setsearchTerm(e.target.value);
+  };
+
+  const filteredUsers = users.filter((user) =>
+    `${user.username}${user.prompt}${user.score}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  console.log({ selectedUser });
+
   return (
-    <main className="flex min-h-screen flex-col items-center p-8 gap-8">
+    <main className="flex min-h-screen flex-col items-center p-8 gap-8 max-w-screen-xl ">
       <Logo />
       <Nav />
-      <div className="container mx-auto mt-10">
-        <h1 className="text-3xl font-bold mb-5 text-center">Leaderboard</h1>
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Rank
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Prompt
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Date
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Score
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {leaderboardData.map((player) => (
-              <tr key={player.rank}>
-                <td className="px-6 py-4 whitespace-nowrap">{player.rank}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{player.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{player.prompt}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{player.date}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{player.score}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="container mt-10 w-100 p-6">
+        <div className="relative flex justify-center items-center mb-6">
+          <div className="text-center flex-grow">
+            <DateSelector
+              onSetDate={(d) => {
+                setdate(d);
+              }}
+            />
+          </div>
+          <div className="absolute right-0 -z-10">
+            <TextInput
+              id="search"
+              type="text"
+              placeholder="Search"
+              onChange={handleChange}
+              value={searchTerm}
+            />
+          </div>
+        </div>
+        <Grid>
+          {filteredUsers.map((user, i) => (
+            <div className="mb-2" key={i}>
+              <button
+                className="w-full h-full"
+                onClick={() => {
+                  setModalOpen(true);
+                  setSelectedUser(user);
+                }}
+              >
+                <Card className="text-center relative">
+                  <img
+                    src={user.imgSrc}
+                    alt=""
+                    className="block mx-auto max-w-full h-auto"
+                  />
+                  <div className="font-bold">{user.username}</div>
+                  <div>{user.score}</div>
+                  <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white px-2 py-1 text-sm font-bold">
+                    #{i + 1}
+                  </div>
+                </Card>
+              </button>
+            </div>
+          ))}
+        </Grid>
       </div>
+      {modalOpen && selectedUser && (
+        <Modal show={modalOpen} onClose={closeModal} dismissible>
+          <div className="relative flex flex-col py-3 overflow-y-auto h-[90vh]">
+            <button
+              onClick={closeModal}
+              className="absolute top-0 right-0 m-2 text-gray-600 hover:text-gray-900 focus:outline-none bg-transparent border-none"
+            >
+              x
+            </button>
+            <div className="max-w-full h-auto px-24 py-4">
+              <img
+                src={selectedUser.imgSrc}
+                alt=""
+                className="block mx-auto rounded-lg"
+              />
+            </div>
+            <div className="text-center mt-4 font-bold">
+              {selectedUser.username}
+            </div>
+            <div className="p-4 mt-2 max-h-20">
+              <p className="border border-gray-300 overflow-y-auto p-4">
+                {selectedUser.prompt}
+              </p>
+            </div>
+          </div>
+        </Modal>
+      )}
     </main>
   );
 };
