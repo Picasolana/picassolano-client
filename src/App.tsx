@@ -1,4 +1,3 @@
-import React from "react";
 import { Title } from "./components/Title";
 import { getImage, image_url } from "./api/getImage";
 import { GivenImage } from "./components/GivenImage";
