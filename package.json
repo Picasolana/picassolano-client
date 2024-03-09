@@ -13,6 +13,7 @@
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.25",
     "clsx": "^2.1.0",
+    "flowbite-react": "^0.7.2",
     "framer-motion": "^11.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
+    "@types/react-modal": "^3.16.3",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.18",
     "eslint": "^8.56.0",
