@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import Chevron from "react-chevron";
 import SubmitButton from "./SubmitButton";
