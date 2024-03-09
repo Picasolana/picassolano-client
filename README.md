@@ -1,5 +1,9 @@
 # Picassolano client
 
+# Mechanics
+
+![alt text](image.png)
+
 ## Features
 
 - **Vite**: A blazing fast frontend build tool that provides lightning-fast cold server start and hot module replacement (HMR).
