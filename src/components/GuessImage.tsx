@@ -73,7 +73,8 @@ export const GuessImage: React.FC<GivenImageProps> = ({ userGuess }) => {
           </div>
           <textarea
             value={guessText}
-            className="border-2 border-solid border-gray-300 rounded-md w-full h-[100px] py-2 px-3 text-wrap whitespace-nowrap"
+            placeholder="Enter your guess here"
+            className="border-2 border-solid border-gray-300 rounded-md w-full h-[100px] py-2 px-3 text-wrap whitespace-nowrap disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50 disabled:resize-none"
             onChange={(e) => setGuessText(e.target.value)}
             disabled={currentGuess.guess.text ? true : false}
           />
