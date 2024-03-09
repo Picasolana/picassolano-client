@@ -34,7 +34,7 @@ interface UserGuessPost {
 const baseURL = "http://localhost:3000";
 
 export const postUserGuess = async (data: UserGuessPost) => {
-  const response = await fetch(`${baseURL}/api/submit`, {
+  const response = await fetch(`${baseURL}/api/contest/submit`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -60,13 +60,13 @@ export const getUserResult = async (data: {
   index: number;
 }): Promise<UserResult> => {
   const response = await fetch(
-    `${baseURL}/api/submission/${data.sessionId}/${data.index}`
+    `${baseURL}/api/contest/submission/${data.sessionId}/${data.index}`
   );
   return response.json();
 };
 
 export const getSessionId = async () => {
-  const response = await fetch(`${baseURL}/api/session`);
+  const response = await fetch(`${baseURL}/api/session/new`);
   return response.json();
 };
 
@@ -74,7 +74,7 @@ export const saveUserResult = async (data: {
   identifier: string;
   sessionId: string;
 }) => {
-  const response = await fetch(`${baseURL}/api/save`, {
+  const response = await fetch(`${baseURL}/api/session/save`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

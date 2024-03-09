@@ -8,7 +8,7 @@ const baseURL = "http://localhost:3000";
 
 export const getImage = async () => {
   try {
-    const response = await fetch(`${baseURL}/api/target`);
+    const response = await fetch(`${baseURL}/api/contest/target`);
     const data = await response.json();
     return data;
   } catch (error) {
