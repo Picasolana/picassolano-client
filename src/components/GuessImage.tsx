@@ -1,42 +1,88 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Chevron from "react-chevron";
 import SubmitButton from "./SubmitButton";
 import { EnterEmailModal } from "./EnterEmail";
-interface UserGuess {
-  id: string;
-  guess: {
-    text: string;
-    src: string;
-    score: number;
+import { UserGuess, useUser } from "../hooks/useUser";
+import { postUserGuess } from "../api/userGuess.api";
+import { useNavigate } from "react-router-dom";
+
+const displayAttempts = (currentGuess: UserGuess) => {
+  switch (currentGuess.id) {
+    case "0":
+      return "1st Attempt";
+    case "1":
+      return "2nd Attempt";
+    case "2":
+      return "3rd Attempt";
+    case "3":
+      return "4th Attempt";
+    case "4":
+      return "5th Attempt";
+    default:
+      return "";
+  }
+};
+
+export const GuessImage = () => {
+  const { userGuess, sessionId, userIdentifier, setUserGuess } = useUser();
+  const emptyGuess = {
+    id: userGuess?.length?.toString(),
+    text: "",
+    src: "https://via.placeholder.com/300",
+    score: 0,
   };
-}
-
-interface GivenImageProps {
-  userGuess: UserGuess[];
-}
-
-export const GuessImage: React.FC<GivenImageProps> = ({ userGuess }) => {
-  const [currentGuess, setCurrentGuess] = useState(userGuess[0]);
-  const [guessText, setGuessText] = useState(currentGuess.guess.text || "");
-  const maxIndex = userGuess.length - 1;
+  const userGuessData =
+    userGuess.length < 5 ? [...userGuess, emptyGuess] : userGuess;
+  const [currentGuess, setCurrentGuess] = useState(
+    userGuessData[userGuessData.length - 1]
+  );
+  const [guessText, setGuessText] = useState(currentGuess.text || "");
+  const maxIndex = userGuessData.length - 1;
   const currentIndex = Number(currentGuess?.id);
   const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleClickPrevious = () => {
     if (Number(currentGuess.id) > 0) {
-      setCurrentGuess(userGuess[currentIndex - 1]);
-      setGuessText(userGuess[currentIndex - 1].guess.text);
+      setCurrentGuess(userGuessData[currentIndex - 1]);
+      setGuessText(userGuessData[currentIndex - 1].text);
+    }
+  };
+  const handleClickNext = () => {
+    if (Number(currentGuess.id) <= maxIndex) {
+      setCurrentGuess(userGuessData[currentIndex + 1]);
+      setGuessText(userGuessData[currentIndex + 1].text);
     }
   };
 
-  const handleSubmit = () => {
-    setOpenModal(true);
-  };
-
-  const handleClickNext = () => {
-    if (Number(currentGuess.id) <= maxIndex) {
-      setCurrentGuess(userGuess[currentIndex + 1]);
-      setGuessText(userGuess[currentIndex + 1].guess.text);
+  const handleSubmit = async () => {
+    const newGuess = {
+      ...emptyGuess,
+      text: guessText,
+    };
+    setUserGuess([...userGuess, newGuess]);
+    setCurrentGuess(newGuess);
+    /**
+     * ask user for email or wallet address after the last guess
+     */
+    if (newGuess.id === "4") {
+      if (!userIdentifier) {
+        setOpenModal(true);
+      } else {
+        await postUserGuess({
+          sessionId,
+          identifier: userIdentifier,
+          userGuess: [...userGuess, newGuess],
+        });
+        navigate("/leaderboard");
+      }
+    } else {
+      await postUserGuess({
+        sessionId,
+        identifier: userIdentifier,
+        userGuess: [...userGuess, newGuess],
+      });
+      navigate("/leaderboard");
     }
   };
 
@@ -56,16 +102,20 @@ export const GuessImage: React.FC<GivenImageProps> = ({ userGuess }) => {
 
         <div className="flex flex-col gap-4 h-full">
           <h3 className="font-semibold text-center">
-            Score:{" "}
-            {Number(currentGuess.guess.score).toLocaleString(undefined, {
-              style: "percent",
-            })}
+            {`${displayAttempts(currentGuess)} - Score: 
+            ${
+              Number(currentGuess.score) > 0
+                ? Number(currentGuess.score).toLocaleString(undefined, {
+                    style: "percent",
+                  })
+                : "?"
+            }`}
           </h3>
           <div className="flex flex-col gap-4">
             <div className="w-full h-[40vh]">
               <img
-                src={currentGuess.guess.src}
-                alt={currentGuess.guess.text}
+                src={currentGuess.src}
+                alt={currentGuess.text}
                 className="rounded-lg h-full"
               />
             </div>
@@ -74,7 +124,7 @@ export const GuessImage: React.FC<GivenImageProps> = ({ userGuess }) => {
               placeholder="Enter your guess here"
               className="border-2 border-solid border-gray-300 rounded-md w-full h-[100px] py-2 px-3 text-wrap whitespace-nowrap disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50 disabled:resize-none"
               onChange={(e) => setGuessText(e.target.value)}
-              disabled={currentGuess.guess.text ? true : false}
+              disabled={currentGuess.text ? true : false}
             />
           </div>
           <SubmitButton btnText="Submit" onClick={handleSubmit} />

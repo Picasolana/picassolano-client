@@ -1,7 +1,6 @@
 import { Title } from "./components/Title";
 import { getImage, image_url } from "./api/getImage";
 import { GivenImage } from "./components/GivenImage";
-import { getUserGuess } from "./api/getUserGuess";
 import { GuessImage } from "./components/GuessImage";
 import { useEffect, useState } from "react";
 import { Nav } from "./components/Nav";
@@ -11,7 +10,6 @@ import { getCookie } from "./utils/cookie";
 
 export default function Home() {
   const [imageUrl, setImageUrl] = useState("");
-  const [userGuess, setUserGuess] = useState([]);
   const [hideLanding, setHideLanding] = useState(false);
   const [hasLandingCookie, setHasLandingCookie] = useState(false);
 
@@ -31,19 +29,6 @@ export default function Home() {
     fetchImage();
   }, []);
 
-  useEffect(() => {
-    const fetchUserGuess = async () => {
-      const userGuessData = await getUserGuess();
-      setUserGuess(userGuessData.data);
-    };
-    fetchUserGuess();
-  }, []);
-
-  const emptyGuess = {
-    id: userGuess?.length?.toString(),
-    guess: { text: "", src: "https://via.placeholder.com/300", score: 0 },
-  };
-
   if (!hasLandingCookie && !hideLanding) {
     return <Landing setHideLanding={setHideLanding} />;
   } else {
@@ -58,7 +43,7 @@ export default function Home() {
             alt={"stock image"}
             description="Guess my prompt"
           />
-          <GuessImage userGuess={[...userGuess, emptyGuess]} />
+          <GuessImage />
         </div>
       </main>
     );
