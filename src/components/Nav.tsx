@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import React from "react";
+import { NavLink } from "react-router-dom";
 
 export const Nav = () => {
   return (
@@ -10,10 +11,20 @@ export const Nav = () => {
     >
       <div style={{ display: "flex", margin: "0 auto" }}>
         <div style={{ padding: "5px 10px" }}>
-          <Link to={`/`}>Main</Link>
+          <NavLink
+            to={`/`}
+            className={({ isActive }: any) => (isActive ? "underline" : "")}
+          >
+            <span>Main</span>
+          </NavLink>
         </div>
         <div style={{ padding: "5px 10px" }}>
-          <Link to={`/leaderboard`}>Leader Board</Link>
+          <NavLink
+            to={`/leaderboard`}
+            className={({ isActive }: any) => (isActive ? "underline" : "")}
+          >
+            <span>Leader Board</span>
+          </NavLink>
         </div>
       </div>
     </nav>
