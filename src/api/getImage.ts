@@ -7,7 +7,11 @@ export const placeholderImg =
 const baseURL = "http://localhost:3000";
 
 export const getImage = async () => {
-  const response = await fetch(`${baseURL}/api/target`);
-
-  return response ? response.json() : placeholderImg;
+  try {
+    const response = await fetch(`${baseURL}/api/target`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return image_url;
+  }
 };
