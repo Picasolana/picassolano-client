@@ -28,22 +28,58 @@ interface UserGuess {
 
 interface UserGuessPost {
   sessionId?: string;
-  identifier: string;
-  userGuess: UserGuess[];
+  userGuess: UserGuess;
 }
 
-export const getUserGuess = async (url?: string) => {
-  const response = url ? await fetch(`/api/guessImage?url=${url}`) : "";
-  return response ? response.json() : mockData;
-};
+const baseURL = "http://localhost:3000";
 
 export const postUserGuess = async (data: UserGuessPost) => {
-  const response = await fetch("/api/guessImage", {
+  const response = await fetch(`${baseURL}/api/submit`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      sessionId: data.sessionId,
+      prompt: data.userGuess.text,
+    }),
+  });
+  return response.json();
+};
+
+interface UserResult {
+  index: number;
+  sessionId: string;
+  prompt: string;
+  image: string;
+  score: number;
+}
+
+export const getUserResult = async (data: {
+  sessionId: string;
+  index: number;
+}): Promise<UserResult> => {
+  const response = await fetch(
+    `${baseURL}/api/submission/${data.sessionId}/${data.index}`
+  );
+  return response.json();
+};
+
+export const getSessionId = async () => {
+  const response = await fetch(`${baseURL}/api/session`);
+  return response.json();
+};
+
+export const saveUserResult = async (data: {
+  identifier: string;
+  sessionId: string;
+}) => {
+  const response = await fetch(`${baseURL}/api/save`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email: data.identifier, sessionId: data.sessionId }),
   });
   return response.json();
 };

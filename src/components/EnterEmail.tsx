@@ -1,6 +1,6 @@
 import { Modal } from "flowbite-react";
 import { useState } from "react";
-import { postUserGuess } from "../api/userGuess.api";
+import { saveUserResult } from "../api/userGuess.api";
 import { useUser } from "../hooks/useUser";
 import ConnectWallet from "./ConnectWallet";
 import { getProvider } from "../utils/connectWallet";
@@ -17,15 +17,14 @@ const EmailForm: React.FC<{ setIsEmail: (value: boolean) => void }> = ({
 }) => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
-  const { sessionId, userIdentifier, setUserIdentifier, userGuess } = useUser();
+  const { sessionId, setUserIdentifier } = useUser();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setUserIdentifier(email);
     setCookie("userIdentifier", email, 1);
-    await postUserGuess({
+    await saveUserResult({
       sessionId,
-      identifier: userIdentifier || email,
-      userGuess,
+      identifier: email,
     });
     navigate("/leaderboard");
   };

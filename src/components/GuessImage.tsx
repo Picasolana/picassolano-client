@@ -3,7 +3,7 @@ import Chevron from "react-chevron";
 import SubmitButton from "./SubmitButton";
 import { EnterEmailModal } from "./EnterEmail";
 import { UserGuess, useUser } from "../hooks/useUser";
-import { postUserGuess } from "../api/userGuess.api";
+import { postUserGuess, saveUserResult } from "../api/userGuess.api";
 import { useNavigate } from "react-router-dom";
 
 const displayAttempts = (currentGuess: UserGuess) => {
@@ -71,16 +71,18 @@ export const GuessImage = () => {
       } else {
         await postUserGuess({
           sessionId,
+          userGuess: newGuess,
+        });
+        await saveUserResult({
           identifier: userIdentifier,
-          userGuess: [...userGuess, newGuess],
+          sessionId,
         });
         navigate("/leaderboard");
       }
     } else {
       await postUserGuess({
         sessionId,
-        identifier: userIdentifier,
-        userGuess: [...userGuess, newGuess],
+        userGuess: newGuess,
       });
       navigate("/leaderboard");
     }

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getUserGuess } from "../api/userGuess.api";
+import { getSessionId, getUserResult } from "../api/userGuess.api";
 import { getCookie } from "../utils/cookie";
 
 export interface UserGuess {
@@ -45,16 +45,38 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [userIdentifierFromCookie]);
 
   useEffect(() => {
-    const fetchUserGuess = async () => {
-      const userGuessData = await getUserGuess();
-      setUserGuess(userGuessData.data.userGuess);
-      setSessionId(userGuessData.data.sessionId);
-      if (userGuessData.data.userIdentifier) {
-        setUserIdentifier(userGuessData.data.userIdentifier);
-      }
+    const fetchSessionId = async () => {
+      const sessionIdData = await getSessionId();
+      setSessionId(sessionIdData.sessionId);
     };
-    fetchUserGuess();
+    fetchSessionId();
   }, []);
+
+  useEffect(() => {
+    let userGuessResult: UserGuess[] = [];
+    if (sessionId) {
+      const fetchUserResult = async () => {
+        for (let i; (i = 0); i <= 4) {
+          try {
+            const userGuessData = await getUserResult({ sessionId, index: i });
+            userGuessResult = [
+              ...userGuessResult,
+              {
+                id: userGuessData.index.toString(),
+                text: userGuessData.prompt,
+                src: userGuessData.image,
+                score: userGuessData.score,
+              },
+            ];
+          } catch (err) {
+            return;
+          }
+        }
+        setUserGuess(userGuessResult);
+      };
+      fetchUserResult();
+    }
+  }, [sessionId]);
 
   return (
     <UserContext.Provider

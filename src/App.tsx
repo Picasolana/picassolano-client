@@ -23,7 +23,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const image = await getImage(image_url);
+      const image = await getImage();
       setImageUrl(image);
     };
     fetchImage();

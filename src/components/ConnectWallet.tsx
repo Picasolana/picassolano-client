@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { postUserGuess } from "../api/userGuess.api";
+import { postUserGuess, saveUserResult } from "../api/userGuess.api";
 import { useUser } from "../hooks/useUser";
 import { setCookie } from "../utils/cookie";
 
@@ -14,15 +14,14 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
   walletAddress,
   error,
 }) => {
-  const { setUserIdentifier, userGuess, sessionId, userIdentifier } = useUser();
+  const { setUserIdentifier, sessionId } = useUser();
   const navigate = useNavigate();
   const handleSubmit = async () => {
     setUserIdentifier(walletAddress);
     setCookie("userIdentifier", walletAddress, 1);
-    await postUserGuess({
+    await saveUserResult({
       sessionId,
-      identifier: userIdentifier || walletAddress,
-      userGuess,
+      identifier: walletAddress,
     });
     navigate("/leaderboard");
   };
