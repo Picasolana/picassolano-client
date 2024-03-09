@@ -52,7 +52,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       };
       fetchSessionId();
     }
-    console.log("sessionId", sessionId);
   }, []);
 
   useEffect(() => {
