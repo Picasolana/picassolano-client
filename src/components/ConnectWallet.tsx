@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { postUserGuess, saveUserResult } from "../api/userGuess.api";
 import { useUser } from "../hooks/useUser";
 import { setCookie } from "../utils/cookie";
+import { useState } from "react";
 
 interface ConnectWalletProps {
   status: boolean;
@@ -15,15 +16,25 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
   error,
 }) => {
   const { setUserIdentifier, sessionId } = useUser();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleSubmit = async () => {
+    setLoading(true);
     setUserIdentifier(walletAddress);
     setCookie("userIdentifier", walletAddress, 1);
-    await saveUserResult({
-      sessionId,
-      identifier: walletAddress,
-    });
-    navigate("/leaderboard");
+    try {
+      const res = await saveUserResult({
+        sessionId,
+        identifier: walletAddress,
+      });
+      if (res.ok) {
+        setLoading(false);
+        navigate("/leaderboard");
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,9 +54,14 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
       <button
         type="button"
         onClick={handleSubmit}
-        className="rounded-md bg-indigo-600 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 self-end"
+        className="flex gap-3 justify-center rounded-md bg-indigo-600 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 self-end"
       >
-        Submit
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+          </div>
+        ) : null}
+        {loading ? "Processing" : "Submit"}
       </button>
     </div>
   );

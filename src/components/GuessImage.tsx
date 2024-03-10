@@ -28,8 +28,8 @@ const displayAttempts = (currentGuess: UserGuess) => {
 };
 
 export const GuessImage = () => {
-  const { userGuess, sessionId, userIdentifier, setUserGuess, setUserAttempt } =
-    useUser();
+  const [loading, setLoading] = useState(false);
+  const { userGuess, sessionId, userIdentifier, setUserGuess } = useUser();
   const emptyGuess = {
     id: userGuess?.length?.toString(),
     text: "",
@@ -46,7 +46,6 @@ export const GuessImage = () => {
   const currentIndex = Number(currentGuess?.id);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
-  console.log("userGuess", userGuess);
 
   const handleClickPrevious = () => {
     if (Number(currentGuess.id) > 0) {
@@ -62,62 +61,76 @@ export const GuessImage = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const newGuess = {
       ...emptyGuess,
       text: guessText,
     };
-    setUserGuess([...userGuess, newGuess]);
-    setCurrentGuess(newGuess);
-    /**
-     * ask user for email or wallet address after the last guess
-     */
-    if (newGuess.id === "4") {
+    if (currentGuess.src.includes("data:image/jpeg;base64")) {
       if (!userIdentifier) {
         setOpenModal(true);
+        setLoading(false);
       } else {
-        await postUserGuess({
-          sessionId,
-          userGuess: newGuess,
-        });
         const res = await saveUserResult({
           identifier: userIdentifier,
           sessionId,
         });
-        const userGuessData = await getUserResult({
-          sessionId,
-          index: Number(newGuess.id),
-        });
-        setUserGuess([
-          ...userGuess.slice(0, Number(newGuess.id)),
-          {
-            id: userGuessData.index.toString(),
-            text: userGuessData.prompt,
-            src: userGuessData.image,
-            score: userGuessData.score,
-          },
-        ]);
         if (res.ok) {
           navigate("/leaderboard");
         }
+        setLoading(false);
       }
-    } else {
-      await postUserGuess({
-        sessionId,
-        userGuess: newGuess,
+    }
+    /**
+     * ask user for email or wallet address after the last guess
+     */
+    await postUserGuess({
+      sessionId,
+      userGuess: newGuess,
+    });
+    const res = await saveUserResult({
+      identifier: userIdentifier,
+      sessionId,
+    });
+    const userGuessData = await getUserResult({
+      sessionId,
+      index: Number(newGuess.id),
+    });
+    setUserGuess([
+      ...userGuess.slice(0, Number(newGuess.id)),
+      {
+        id: userGuessData.index.toString(),
+        text: userGuessData.prompt,
+        src: "data:image/jpeg;base64," + userGuessData.image,
+        score: userGuessData.score,
+      },
+    ]);
+
+    if (Number(newGuess.id) < 4) {
+      setCurrentGuess({
+        ...emptyGuess,
+        id: (Number(userGuessData.index.toString()) + 1).toString(),
       });
-      const userGuessData = await getUserResult({
-        sessionId,
-        index: Number(newGuess.id),
+      setGuessText(emptyGuess.text);
+    } else if (Number(newGuess.id) === 4) {
+      setCurrentGuess({
+        id: userGuessData.index.toString(),
+        text: userGuessData.prompt,
+        src: "data:image/jpeg;base64," + userGuessData.image,
+        score: userGuessData.score,
       });
-      setUserGuess([
-        ...userGuess.slice(0, Number(newGuess.id)),
-        {
-          id: userGuessData.index.toString(),
-          text: userGuessData.prompt,
-          src: "data:image/jpeg;base64," + userGuessData.image,
-          score: userGuessData.score,
-        },
-      ]);
+      setGuessText(userGuessData.prompt);
+    }
+
+    setLoading(false);
+
+    if (newGuess.id === "4") {
+      if (!userIdentifier) {
+        setOpenModal(true);
+      }
+      if (res.ok) {
+        navigate("/leaderboard");
+      }
     }
   };
 
@@ -160,7 +173,18 @@ export const GuessImage = () => {
               disabled={currentGuess.text ? true : false}
             />
           </div>
-          <SubmitButton btnText="Submit" onClick={handleSubmit} />
+          <SubmitButton
+            btnText="Submit"
+            onClick={handleSubmit}
+            loading={loading}
+            disabled={
+              guessText !== "" &&
+              Number(currentGuess.id) === maxIndex &&
+              Number(currentGuess.id) < 5
+                ? false
+                : true
+            }
+          />
         </div>
         {currentIndex < maxIndex ? (
           <div

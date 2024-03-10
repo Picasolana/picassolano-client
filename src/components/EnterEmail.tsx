@@ -6,19 +6,22 @@ import ConnectWallet from "./ConnectWallet";
 import { getProvider } from "../utils/connectWallet";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "../utils/cookie";
+import { TelegramForm } from "./EnterTelegram";
 
 interface EnterEmailProps {
   openModal: boolean;
   setOpenModal: (value: boolean) => void;
 }
 
-const EmailForm: React.FC<{ setIsEmail: (value: boolean) => void }> = ({
-  setIsEmail,
-}) => {
+const EmailForm: React.FC<{
+  setIsEmail: (value: boolean) => void;
+}> = ({ setIsEmail }) => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { sessionId, setUserIdentifier } = useUser();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
     setUserIdentifier(email);
     setCookie("userIdentifier", email, 1);
@@ -27,11 +30,14 @@ const EmailForm: React.FC<{ setIsEmail: (value: boolean) => void }> = ({
         sessionId,
         identifier: email,
       });
+
       if (res.ok) {
+        setLoading(false);
         navigate("/leaderboard");
       }
     } catch (err) {
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -57,9 +63,14 @@ const EmailForm: React.FC<{ setIsEmail: (value: boolean) => void }> = ({
         </button>
         <button
           type="submit"
-          className="rounded-md bg-indigo-600 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="flex gap-3 justify-center rounded-md bg-indigo-600 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Submit
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+            </div>
+          ) : null}
+          {loading ? "Processing" : "Submit"}
         </button>
       </div>
     </form>
@@ -71,6 +82,7 @@ export const EnterEmailModal: React.FC<EnterEmailProps> = ({
   setOpenModal,
 }) => {
   const [isEmail, setIsEmail] = useState(false);
+  const [isTelegram, setIsTelegram] = useState(false);
   const provider = getProvider();
   const [isWalletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string>("");
@@ -97,6 +109,8 @@ export const EnterEmailModal: React.FC<EnterEmailProps> = ({
           <div className="flex flex-col gap-4">
             {isEmail ? (
               <EmailForm setIsEmail={setIsEmail} />
+            ) : isTelegram ? (
+              <TelegramForm setIsTelegram={setIsTelegram} />
             ) : isWalletConnected && walletAddress ? (
               <ConnectWallet
                 status={isWalletConnected}
@@ -111,6 +125,13 @@ export const EnterEmailModal: React.FC<EnterEmailProps> = ({
                   className="rounded-md bg-indigo-50 px-3.5 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
                 >
                   Enter your email
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsTelegram(true)}
+                  className="rounded-md bg-indigo-50 px-3.5 py-2.5 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-100"
+                >
+                  Enter your telegram handle
                 </button>
                 <button
                   type="button"
