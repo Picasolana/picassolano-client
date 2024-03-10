@@ -16,6 +16,7 @@
     "@web3-react/core": "^8.2.3",
     "@web3-react/types": "^8.2.3",
     "clsx": "^2.1.0",
+    "dotenv": "^16.4.5",
     "eventemitter3": "^5.0.1",
     "flowbite-react": "^0.7.2",
     "framer-motion": "^11.0.8",
