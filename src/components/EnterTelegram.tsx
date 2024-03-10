@@ -7,7 +7,7 @@ import { setCookie } from "../utils/cookie";
 export const TelegramForm: React.FC<{
   setIsTelegram: (value: boolean) => void;
 }> = ({ setIsTelegram }) => {
-  const [telegram, setTelegram] = useState("");
+  const [telegram, setTelegram] = useState("@");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { sessionId, setUserIdentifier } = useUser();
