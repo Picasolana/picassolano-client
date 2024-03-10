@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Chevron from "react-chevron";
 import SubmitButton from "./SubmitButton";
 import { EnterEmailModal } from "./EnterEmail";
@@ -42,6 +42,7 @@ export const GuessImage = () => {
     userGuessData[userGuessData.length - 1]
   );
   const [guessText, setGuessText] = useState(currentGuess.text || "");
+  const [submitBtnText, setSubmitBtnText] = useState("Submit");
   const maxIndex = userGuessData.length - 1;
   const currentIndex = Number(currentGuess?.id);
   const [openModal, setOpenModal] = useState(false);
@@ -59,6 +60,15 @@ export const GuessImage = () => {
       setGuessText(userGuessData[currentIndex + 1].text);
     }
   };
+
+  useEffect(() => {
+    if (
+      userGuess.length === 5 &&
+      currentGuess.src.includes("data:image/jpeg;base64")
+    ) {
+      setSubmitBtnText("Go to Leaderboard");
+    }
+  }, [userGuess, currentGuess]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -165,10 +175,11 @@ export const GuessImage = () => {
               className="border-2 border-solid text-cyan-800 border-gray-300 rounded-md w-full h-[100px] py-2 px-3 text-wrap whitespace-nowrap disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50 disabled:resize-none"
               onChange={(e) => setGuessText(e.target.value)}
               disabled={currentGuess.text ? true : false}
+              rows={4}
             />
           </div>
           <SubmitButton
-            btnText="Submit"
+            btnText={submitBtnText}
             onClick={handleSubmit}
             loading={loading}
             disabled={
