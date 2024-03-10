@@ -1,4 +1,4 @@
-# Picassolano client
+# Picassolana client
 
 ![alt text](image-1.png)
 
