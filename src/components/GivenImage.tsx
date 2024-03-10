@@ -17,7 +17,7 @@ export const GivenImage: React.FC<GivenImageProps> = ({
       <div className="w-full h-[40vh]">
         <img src={src} alt={alt} className="rounded-lg h-full" />
       </div>
-      <p className="text-sm mt-2">{description}</p>
+      <p className="text-md mt-2 font-semibold">{description}</p>
     </div>
   );
 };

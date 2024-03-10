@@ -42,7 +42,7 @@ export default function Home() {
           <GivenImage
             src={imageUrl}
             alt={"stock image"}
-            description="Guess my prompt"
+            description="Guess my prompt in 5 attempts"
           />
 
           <GuessImage />
