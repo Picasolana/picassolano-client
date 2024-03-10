@@ -1,15 +1,19 @@
 import { faker } from "@faker-js/faker";
-import { Card, Modal, TextInput } from "flowbite-react";
+import { Card, Modal } from "flowbite-react";
 import { Nav } from "./Nav";
 import Grid from "./Grid";
-import { ChangeEvent, useRef, useState } from "react";
-import DateSelector from "./DateSelector";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { BackgroundBeams } from "./BackgroundBeams";
+import {
+  IContestEntry,
+  IUser,
+  getImageOfUser,
+  getLeaderboard,
+} from "../api/getLeaderboard";
 
 type User = {
   username: string;
   score: string;
-  date: string;
   prompt: string;
   imgSrc: string;
 };
@@ -23,6 +27,10 @@ const promptText = `
   nulla pariatur. Excepteur sint occaecat cupidatat non proident,
   sunt in culpa qui officia deserunt mollit anim id est laborum.
 `;
+
+function smallDecimals(value: number) {
+  return value.toFixed(2);
+}
 
 const createMockUser: () => User = () => ({
   username: faker.internet.userName(),
@@ -45,13 +53,29 @@ let users = all_users[0].sort(
 ) as User[];
 
 export const Leaderboard: React.FC<LeaderboardProps> = () => {
-  console.log("logg");
+  const [leaderboard, setLeaderboard] = useState<IUser[]>([]);
+  const [userContestData, setUserContestData] = useState<IContestEntry[]>([]);
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User>(createMockUser);
+  const [selectedUser, setSelectedUser] = useState<IUser>();
   const [searchTerm, setsearchTerm] = useState("");
   const old = useRef(0);
   const [i, seti] = useState(0);
+
+  useEffect(() => {
+    async function fetchData() {
+      const fetchedLeaderboard = await getLeaderboard();
+      const fetchedUserContestData = await Promise.all(
+        fetchedLeaderboard.map((user) =>
+          getImageOfUser(user.sessionId, user.bestContestEntryIndex)
+        )
+      );
+      setLeaderboard(fetchedLeaderboard);
+      setUserContestData(fetchedUserContestData);
+    }
+
+    fetchData();
+  });
 
   if (i !== old.current) {
     users = all_users[i].sort(
@@ -67,16 +91,20 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
     setModalOpen(false);
   };
 
+  const getContentOfUser = (user: IUser) => {
+    const contestEntry = userContestData.find(
+      (entry) => entry.sessionId === user.sessionId
+    );
+    return {
+      image: "data:image/jpeg;base64," + contestEntry?.image,
+      prompt: contestEntry?.prompt,
+    };
+  };
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
     setsearchTerm(e.target.value);
   };
-
-  const filteredUsers = users.filter((user) =>
-    `${user.username}${user.prompt}${user.score}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
 
   console.log({ selectedUser });
 
@@ -87,25 +115,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
 
       <div className="container mt-10 w-100 p-6">
         <div className="relative flex justify-center items-center mb-6">
-          <div className="text-center flex-grow">
-            <DateSelector
-              onSetDate={(d) => {
-                seti((i) => i + 1);
-              }}
-            />
-          </div>
-          <div className="absolute right-0">
-            <TextInput
-              id="search"
-              type="text"
-              placeholder="Search"
-              onChange={handleChange}
-              value={searchTerm}
-            />
-          </div>
+          <div className="text-center flex-grow"></div>
+          <div className="absolute right-0"></div>
         </div>
         <Grid>
-          {filteredUsers.map((user, i) => (
+          {leaderboard.map((user, i) => (
             <div className="mb-2" key={i}>
               <button
                 className="w-full h-full"
@@ -116,12 +130,14 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
               >
                 <Card className="text-center relative">
                   <img
-                    src={user.imgSrc}
+                    src={getContentOfUser(user)?.image}
                     alt=""
                     className="block mx-auto max-w-full h-auto"
                   />
-                  <div className="font-bold">{user.username}</div>
-                  <div>{user.score}</div>
+                  <div className="font-bold text-cyan-800">{user.name}</div>
+                  <div className="font-bold text-cyan-800">
+                    {`${smallDecimals(user.bestScore)} %`}
+                  </div>
                   <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white px-2 py-1 text-sm font-bold">
                     #{i + 1}
                   </div>
@@ -142,17 +158,18 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
             </button>
             <div className="max-w-full h-auto px-24 py-4">
               <img
-                src={selectedUser.imgSrc}
+                src={getContentOfUser(selectedUser)?.image}
                 alt=""
                 className="block mx-auto rounded-lg"
               />
             </div>
             <div className="text-center mt-4 font-bold">
-              {selectedUser.username}
+              {selectedUser.name}
             </div>
             <div className="p-4 mt-2 max-h-20">
+              <h2 className="text-cyan-800 font-bold p-1">Prompt</h2>
               <p className="border text-cyan-800 border-gray-300 overflow-y-auto p-4">
-                {selectedUser.prompt}
+                {getContentOfUser(selectedUser)?.prompt}
               </p>
             </div>
           </div>

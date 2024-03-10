@@ -41,7 +41,7 @@ export const TelegramForm: React.FC<{
         placeholder="Enter your Telegram handle"
         value={telegram}
         onChange={(e) => setTelegram(e.target.value)}
-        className="rounded-md border-2 border-gray-300 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent w-[300px]"
+        className="rounded-md border-2 text-cyan-800 border-gray-300 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent w-[300px]"
       />
       <div className="flex gap-3 justify-between">
         <button
