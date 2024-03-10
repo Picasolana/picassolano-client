@@ -88,10 +88,7 @@ export const GuessImage = () => {
       sessionId,
       userGuess: newGuess,
     });
-    const res = await saveUserResult({
-      identifier: userIdentifier,
-      sessionId,
-    });
+
     const userGuessData = await getUserResult({
       sessionId,
       index: Number(newGuess.id),
@@ -106,30 +103,27 @@ export const GuessImage = () => {
       },
     ]);
 
-    if (Number(newGuess.id) < 4) {
-      setCurrentGuess({
-        ...emptyGuess,
-        id: (Number(userGuessData.index.toString()) + 1).toString(),
-      });
-      setGuessText(emptyGuess.text);
-    } else if (Number(newGuess.id) === 4) {
-      setCurrentGuess({
-        id: userGuessData.index.toString(),
-        text: userGuessData.prompt,
-        src: "data:image/jpeg;base64," + userGuessData.image,
-        score: userGuessData.score,
-      });
-      setGuessText(userGuessData.prompt);
-    }
+    setCurrentGuess({
+      id: userGuessData.index.toString(),
+      text: userGuessData.prompt,
+      src: "data:image/jpeg;base64," + userGuessData.image,
+      score: userGuessData.score,
+    });
+    setGuessText(userGuessData.prompt);
 
     setLoading(false);
 
     if (newGuess.id === "4") {
       if (!userIdentifier) {
         setOpenModal(true);
-      }
-      if (res.ok) {
-        navigate("/leaderboard");
+      } else {
+        const res = await saveUserResult({
+          identifier: userIdentifier,
+          sessionId,
+        });
+        if (res.ok) {
+          navigate("/leaderboard");
+        }
       }
     }
   };
