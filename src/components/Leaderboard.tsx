@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { Card, Modal, TextInput } from "flowbite-react";
 import { Nav } from "./Nav";
-import { Logo } from "./Logo";
 import Grid from "./Grid";
 import { ChangeEvent, useRef, useState } from "react";
 import DateSelector from "./DateSelector";
+import { BackgroundBeams } from "./BackgroundBeams";
 
 type User = {
   username: string;
@@ -81,9 +81,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
   console.log({ selectedUser });
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-8 gap-8">
-      <Logo />
+    <main className="flex min-h-screen flex-col items-center p-8 gap-8 max-w-screen-xl ">
       <Nav />
+      <BackgroundBeams className="z-[-1] absolute inset-0" />
+
       <div className="container mt-10 w-100 p-6">
         <div className="relative flex justify-center items-center mb-6">
           <div className="text-center flex-grow">
@@ -150,7 +151,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
               {selectedUser.username}
             </div>
             <div className="p-4 mt-2 max-h-20">
-              <p className="border border-gray-300 overflow-y-auto p-4">
+              <p className="border text-cyan-800 border-gray-300 overflow-y-auto p-4">
                 {selectedUser.prompt}
               </p>
             </div>

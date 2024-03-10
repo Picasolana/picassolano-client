@@ -31,7 +31,7 @@ interface UserGuessPost {
   userGuess: UserGuess;
 }
 
-const baseURL = import.meta.env.REACT_APP_API_URL;
+const baseURL = "http://localhost:3000";
 
 export const postUserGuess = async (data: UserGuessPost) => {
   const response = await fetch(`${baseURL}/api/contest/submit`, {
@@ -62,6 +62,9 @@ export const getUserResult = async (data: {
   const response = await fetch(
     `${baseURL}/api/contest/submission/${data.sessionId}/${data.index}`
   );
+  if (!response.ok) {
+    console.log(response.statusText);
+  }
   return await response.json();
 };
 
@@ -73,6 +76,9 @@ export const getSessionId = async () => {
     },
     body: JSON.stringify({}),
   });
+  if (!response.ok) {
+    console.log(response.statusText);
+  }
   return await response.json();
 };
 

@@ -168,7 +168,7 @@ export const GuessImage = () => {
             <textarea
               value={guessText}
               placeholder="Enter your guess here"
-              className="border-2 border-solid border-gray-300 rounded-md w-full h-[100px] py-2 px-3 text-wrap whitespace-nowrap disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50 disabled:resize-none"
+              className="border-2 border-solid text-cyan-800 border-gray-300 rounded-md w-full h-[100px] py-2 px-3 text-wrap whitespace-nowrap disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50 disabled:resize-none"
               onChange={(e) => setGuessText(e.target.value)}
               disabled={currentGuess.text ? true : false}
             />

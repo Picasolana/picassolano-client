@@ -1,12 +1,11 @@
-import { Title } from "./components/Title";
 import { getImage } from "./api/getImage";
 import { GivenImage } from "./components/GivenImage";
 import { GuessImage } from "./components/GuessImage";
 import { useEffect, useState } from "react";
 import { Nav } from "./components/Nav";
-import { Logo } from "./components/Logo";
 import { Landing } from "./components/Landing";
 import { getCookie } from "./utils/cookie";
+import { BackgroundBeams } from "./components/BackgroundBeams";
 
 export default function Home() {
   const [imageUrl, setImageUrl] = useState("");
@@ -36,15 +35,16 @@ export default function Home() {
   } else {
     return (
       <main className="flex min-h-screen flex-col items-center p-8 gap-8">
-        <Logo />
+        <BackgroundBeams className="z-[-1] absolute inset-0" />
+
         <Nav />
-        <Title text="Replicate the image using AI" />
         <div className="flex flex-col items-center md:items-start md:flex-row gap-16">
           <GivenImage
             src={imageUrl}
             alt={"stock image"}
             description="Guess my prompt"
           />
+
           <GuessImage />
         </div>
       </main>

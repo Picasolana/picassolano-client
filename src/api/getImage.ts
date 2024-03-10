@@ -4,7 +4,7 @@ export const image_url =
 export const placeholderImg =
   "https://res.cloudinary.com/dac48s3os/image/upload/v1709976853/1000_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75_dvuwhc.jpg";
 
-const baseURL = import.meta.env.REACT_APP_API_URL;
+const baseURL = "http://localhost:3000";
 
 console.log("baseURL", baseURL);
 export const getImage = async () => {

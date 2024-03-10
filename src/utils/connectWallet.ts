@@ -23,7 +23,7 @@ export const getProvider = (): PhantomProvider | undefined => {
     }
   }
 
-  window.open("https://phantom.app/", "_blank");
+  // window.open("https://phantom.app/", "_blank");
 };
 
 export default connectors;

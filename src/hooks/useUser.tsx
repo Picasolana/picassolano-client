@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getSessionId, getUserResult } from "../api/userGuess.api";
+import { getSessionId } from "../api/userGuess.api";
 import { getCookie } from "../utils/cookie";
 
 export interface UserGuess {
