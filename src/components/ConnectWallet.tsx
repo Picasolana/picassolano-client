@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { postUserGuess, saveUserResult } from "../api/userGuess.api";
+import { saveUserResult } from "../api/userGuess.api";
 import { useUser } from "../hooks/useUser";
 import { setCookie } from "../utils/cookie";
 import { useState } from "react";

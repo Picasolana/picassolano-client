@@ -1,8 +1,7 @@
-import { faker } from "@faker-js/faker";
 import { Card, Modal } from "flowbite-react";
 import { Nav } from "./Nav";
 import Grid from "./Grid";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { BackgroundBeams } from "./BackgroundBeams";
 import {
   IContestEntry,
@@ -11,46 +10,46 @@ import {
   getLeaderboard,
 } from "../api/getLeaderboard";
 
-type User = {
-  username: string;
-  score: string;
-  prompt: string;
-  imgSrc: string;
-};
+// type User = {
+//   username: string;
+//   score: string;
+//   prompt: string;
+//   imgSrc: string;
+// };
 
-const promptText = `
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-  enim ad minim veniam, quis nostrud exercitation ullamco laboris
-  nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-  in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-  nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-  sunt in culpa qui officia deserunt mollit anim id est laborum.
-`;
+// const promptText = `
+//   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+//   eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+//   enim ad minim veniam, quis nostrud exercitation ullamco laboris
+//   nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+//   in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+//   nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+//   sunt in culpa qui officia deserunt mollit anim id est laborum.
+// `;
 
 function smallDecimals(value: number) {
   return value.toFixed(2);
 }
 
-const createMockUser: () => User = () => ({
-  username: faker.internet.userName(),
-  date: "09/11/2024",
-  score: `${faker.number.int({ min: 1, max: 100 })}%`,
-  prompt: promptText,
-  imgSrc: faker.image.urlPicsumPhotos(),
-  // "https://plus.unsplash.com/premium_photo-1709311451518-f1b9cb3dab5b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-});
+// const createMockUser: () => User = () => ({
+//   username: faker.internet.userName(),
+//   date: "09/11/2024",
+//   score: `${faker.number.int({ min: 1, max: 100 })}%`,
+//   prompt: promptText,
+//   imgSrc: faker.image.urlPicsumPhotos(),
+//   // "https://plus.unsplash.com/premium_photo-1709311451518-f1b9cb3dab5b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+// });
 
 interface LeaderboardProps {}
 
-let all_users = Array(23)
-  .fill(0)
-  .map(() => Array(20).fill(0).map(createMockUser));
-let users = all_users[0].sort(
-  (a, b) =>
-    parseInt(b.score.replace(/%/g, ""), 10) -
-    parseInt(a.score.replace(/%/g, ""), 10)
-) as User[];
+// let all_users = Array(23)
+//   .fill(0)
+//   .map(() => Array(20).fill(0).map(createMockUser));
+// let users = all_users[0].sort(
+//   (a, b) =>
+//     parseInt(b.score.replace(/%/g, ""), 10) -
+//     parseInt(a.score.replace(/%/g, ""), 10)
+// ) as User[];
 
 export const Leaderboard: React.FC<LeaderboardProps> = () => {
   const [leaderboard, setLeaderboard] = useState<IUser[]>([]);
@@ -58,9 +57,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<IUser>();
-  const [searchTerm, setsearchTerm] = useState("");
-  const old = useRef(0);
-  const [i, seti] = useState(0);
+  // const [searchTerm, setsearchTerm] = useState("");
+  // const old = useRef(0);
+  // const [i, seti] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -77,15 +76,15 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
     fetchData();
   });
 
-  if (i !== old.current) {
-    users = all_users[i].sort(
-      (a, b) =>
-        parseInt(b.score.replace(/%/g, ""), 10) -
-        parseInt(a.score.replace(/%/g, ""), 10)
-    );
-  }
+  // if (i !== old.current) {
+  //   users = all_users[i].sort(
+  //     (a, b) =>
+  //       parseInt(b.score.replace(/%/g, ""), 10) -
+  //       parseInt(a.score.replace(/%/g, ""), 10)
+  //   );
+  // }
 
-  old.current = i;
+  // old.current = i;
 
   const closeModal = () => {
     setModalOpen(false);
@@ -101,10 +100,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
     };
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-    setsearchTerm(e.target.value);
-  };
+  // const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   console.log(e.target.value);
+  //   setsearchTerm(e.target.value);
+  // };
 
   console.log({ selectedUser });
 
