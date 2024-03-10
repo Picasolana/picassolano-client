@@ -1,5 +1,5 @@
 import { Title } from "./components/Title";
-import { getImage, image_url } from "./api/getImage";
+import { getImage } from "./api/getImage";
 import { GivenImage } from "./components/GivenImage";
 import { GuessImage } from "./components/GuessImage";
 import { useEffect, useState } from "react";
