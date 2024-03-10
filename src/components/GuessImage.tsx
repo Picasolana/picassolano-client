@@ -76,7 +76,10 @@ export const GuessImage = () => {
       ...emptyGuess,
       text: guessText,
     };
-    if (currentGuess.src.includes("data:image/jpeg;base64")) {
+    if (
+      currentGuess.id === "4" &&
+      currentGuess.src.includes("data:image/jpeg;base64")
+    ) {
       if (!userIdentifier) {
         setOpenModal(true);
         setLoading(false);
@@ -90,6 +93,7 @@ export const GuessImage = () => {
         }
         setLoading(false);
       }
+      return;
     }
     /**
      * ask user for email or wallet address after the last guess
