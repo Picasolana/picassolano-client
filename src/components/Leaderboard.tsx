@@ -9,6 +9,7 @@ import {
   getImageOfUser,
   getLeaderboard,
 } from "../api/getLeaderboard";
+import Loading from "./Loading";
 
 // type User = {
 //   username: string;
@@ -60,9 +61,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
   // const [searchTerm, setsearchTerm] = useState("");
   // const old = useRef(0);
   // const [i, seti] = useState(0);
+  const [loading, setloading] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
+      setloading(true);
       const fetchedLeaderboard = await getLeaderboard();
       const fetchedUserContestData = await Promise.all(
         fetchedLeaderboard.map((user) =>
@@ -71,10 +74,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
       );
       setLeaderboard(fetchedLeaderboard);
       setUserContestData(fetchedUserContestData);
+      setloading(false);
     }
 
     fetchData();
-  });
+  }, []);
 
   // if (i !== old.current) {
   //   users = all_users[i].sort(
@@ -117,34 +121,38 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
           <div className="text-center flex-grow"></div>
           <div className="absolute right-0"></div>
         </div>
-        <Grid>
-          {leaderboard.map((user, i) => (
-            <div className="mb-2" key={i}>
-              <button
-                className="w-full h-full"
-                onClick={() => {
-                  setModalOpen(true);
-                  setSelectedUser(user);
-                }}
-              >
-                <Card className="text-center relative">
-                  <img
-                    src={getContentOfUser(user)?.image}
-                    alt=""
-                    className="block mx-auto max-w-full h-auto"
-                  />
-                  <div className="font-bold text-cyan-800">{user.name}</div>
-                  <div className="font-bold text-cyan-800">
-                    {`${smallDecimals(user.bestScore)} %`}
-                  </div>
-                  <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white px-2 py-1 text-sm font-bold">
-                    #{i + 1}
-                  </div>
-                </Card>
-              </button>
-            </div>
-          ))}
-        </Grid>
+        {loading ? (
+          <Loading />
+        ) : (
+          <Grid>
+            {leaderboard.map((user, i) => (
+              <div className="mb-2" key={i}>
+                <button
+                  className="w-full h-full"
+                  onClick={() => {
+                    setModalOpen(true);
+                    setSelectedUser(user);
+                  }}
+                >
+                  <Card className="text-center relative">
+                    <img
+                      src={getContentOfUser(user)?.image}
+                      alt=""
+                      className="block mx-auto max-w-full h-auto"
+                    />
+                    <div className="font-bold text-cyan-800">{user.name}</div>
+                    <div className="font-bold text-cyan-800">
+                      {`${smallDecimals(user.bestScore)} %`}
+                    </div>
+                    <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white px-2 py-1 text-sm font-bold">
+                      #{i + 1}
+                    </div>
+                  </Card>
+                </button>
+              </div>
+            ))}
+          </Grid>
+        )}
       </div>
       {modalOpen && selectedUser && (
         <Modal show={modalOpen} onClose={closeModal} dismissible>
