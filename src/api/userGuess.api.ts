@@ -1,4 +1,3 @@
-require("dotenv").config();
 // const mockData = {
 //   data: {
 //     sessionId: "aaa1",
@@ -32,7 +31,7 @@ interface UserGuessPost {
   userGuess: UserGuess;
 }
 
-const baseURL = process.env.REACT_APP_API_URL;
+const baseURL = import.meta.env.REACT_APP_API_URL;
 
 export const postUserGuess = async (data: UserGuessPost) => {
   const response = await fetch(`${baseURL}/api/contest/submit`, {
