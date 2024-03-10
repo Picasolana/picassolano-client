@@ -83,13 +83,14 @@ export const EnterEmailModal: React.FC<EnterEmailProps> = ({
 }) => {
   const [isEmail, setIsEmail] = useState(false);
   const [isTelegram, setIsTelegram] = useState(false);
-  const provider = getProvider();
+
   const [isWalletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [error, setError] = useState<Error | undefined>(undefined);
 
   const handleToggleConnect = async () => {
     setError(undefined); // clear error state
+    const provider = getProvider();
     try {
       if (provider) {
         const resp = await provider?.connect();
