@@ -31,7 +31,7 @@ interface UserGuessPost {
   userGuess: UserGuess;
 }
 
-const baseURL = "http://localhost:3000";
+const baseURL = "http://40.113.162.230:8081";
 
 export const postUserGuess = async (data: UserGuessPost) => {
   const response = await fetch(`${baseURL}/api/contest/submit`, {
