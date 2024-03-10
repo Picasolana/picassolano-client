@@ -81,7 +81,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = () => {
   console.log({ selectedUser });
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-8 gap-8 max-w-screen-xl ">
+    <main className="flex min-h-screen flex-col items-center p-8 gap-8">
       <Logo />
       <Nav />
       <div className="container mt-10 w-100 p-6">
